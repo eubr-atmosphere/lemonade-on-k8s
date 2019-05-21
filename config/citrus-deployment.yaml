@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: citrus
+spec:
+  type: NodePort # Expose services to outside
+  ports:
+  - port: 8080
+    nodePort: ${CITRUS_PORT}
+  selector:
+    app: citrus  # Used to connect to the deployment
+  #clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citrus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: citrus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: citrus
+    spec:
+      containers:
+      - image: eubrabigsea/citrus
+        name: citrus
+        volumeMounts:
+        - name: "nginx-config"
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+      restartPolicy: Always
+      volumes:
+      - name: "nginx-config"
+        configMap:
+          name: "nginx-config"
+ 
+

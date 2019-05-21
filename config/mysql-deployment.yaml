@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  type: NodePort # Expose services to outside
+  ports:
+  - port: 3306
+    nodePort: ${MYSQL_NODE_PORT}
+  selector:
+    app: mysql  # Used to connect to the deployment
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql  # Same as Service/spec/selector/app
+    spec:
+      containers:
+       - image: mysql:5.7
+         name: mysql
+         args:
+          - mysqld
+          - --character-set-server=utf8
+          - --collation-server=utf8_unicode_ci
+          - --init-connect=SET NAMES UTF8;
+          - --innodb-flush-log-at-trx-commit=0
+          - --bind-address=0.0.0.0
+         volumeMounts:
+         - name: mysql-initdb
+           mountPath: /docker-entrypoint-initdb.d
+         - mountPath: /var/lib/mysql
+           name: mysql-data-pvc
+         env:
+         - name: MYSQL_ROOT_PASSWORD
+           value: lemon
+         ports:
+         - containerPort: 3306
+           name: mysql
+      volumes:
+      - name: mysql-initdb
+        configMap:
+          name: mysql-initdb-config
+      - name: mysql-data-pvc
+        persistentVolumeClaim:
+          claimName: mysql-data-pvc
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+data:
+  initdb.sql: |
+    CREATE DATABASE IF NOT EXISTS caipirinha;
+    CREATE DATABASE IF NOT EXISTS limonero;
+    CREATE DATABASE IF NOT EXISTS stand;
+    CREATE DATABASE IF NOT EXISTS seed;
+    CREATE DATABASE IF NOT EXISTS tahiti;
+    CREATE DATABASE IF NOT EXISTS thorn;

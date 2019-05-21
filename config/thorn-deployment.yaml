@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thorn
+spec:
+  type: ClusterIP
+  ports: 
+  - port: 3000
+  selector:
+    app: thorn
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thorn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thorn
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: thorn
+    spec:
+      containers:
+      - image: eubrabigsea/thorn
+        name: thorn
+        volumeMounts:
+        - name: "thorn-config-dev"
+          mountPath: /usr/src/app/config/database.yml
+          subPath: database.yml
+      restartPolicy: Always
+      volumes:
+      - name: "thorn-config-dev"
+        configMap:
+          name: "thorn-config-dev"
+ 

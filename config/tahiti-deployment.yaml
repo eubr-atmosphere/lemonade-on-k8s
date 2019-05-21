@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tahiti
+spec:
+  type: ClusterIP
+  ports: 
+  - port: 23403
+  selector:
+    app: tahiti
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tahiti
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tahiti
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: tahiti
+    spec:
+      containers:
+      - image: eubrabigsea/tahiti
+        name: tahiti
+        volumeMounts:
+        - name: "tahiti-config-dev"
+          mountPath: /usr/local/tahiti/conf/tahiti-config.yaml
+          subPath: tahiti-config.yaml
+      restartPolicy: Always
+      volumes:
+      - name: "tahiti-config-dev"
+        configMap:
+          name: "tahiti-config-dev"
+ 
+

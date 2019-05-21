@@ -1,0 +1,16 @@
+# Limonero configuration file
+limonero:
+    debug: false
+    environment: prod
+    port: 23402
+    secret: ${AUTH_TOKEN}
+    servers:
+        database_url: mysql+pymysql://root:lemon@mysql/limonero?charset=utf8
+    services:
+        thorn:
+            url: http://thorn:3000
+    config:
+        SQLALCHEMY_POOL_SIZE: 40
+        SQLALCHEMY_POOL_RECYCLE: 300
+        dfs.client.use.datanode.hostname: true
+

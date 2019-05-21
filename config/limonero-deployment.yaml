@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: limonero
+spec:
+  type: ClusterIP
+  ports: 
+  - port: 23402
+  selector:
+    app: limonero
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: limonero
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: limonero
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: limonero
+    spec:
+      containers:
+      - image: eubrabigsea/limonero
+        name: limonero
+        volumeMounts:
+        - name: "limonero-config-dev"
+          mountPath: /usr/local/limonero/conf/limonero-config.yaml
+          subPath: limonero-config.yaml
+        - name: limonero-pvc
+          mountPath: /srv/storage/
+      restartPolicy: Always
+      volumes:
+      - name: "limonero-config-dev"
+        configMap:
+          name: "limonero-config-dev"
+      - name: limonero-pvc
+        persistentVolumeClaim:
+          claimName: limonero-pvc
+

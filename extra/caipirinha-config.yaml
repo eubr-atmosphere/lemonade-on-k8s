@@ -1,0 +1,20 @@
+# Caipirinha configuration file
+caipirinha:
+    debug: false
+    environment: prod
+    port: 23401
+    storage_id: 2
+    secret: ${AUTH_TOKEN}
+    servers:
+        database_url: mysql+pymysql://root:lemon@mysql/caipirinha?charset=utf8
+    services:
+        limonero:
+            url: http://limonero:23402
+            #auth_token: 7F6LVA18h8
+            auth_token: 123456
+        thorn:
+            url: http://thorn:3000
+    config:
+        SQLALCHEMY_POOL_SIZE: 0
+        SQLALCHEMY_POOL_RECYCLE: 60
+

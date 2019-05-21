@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: juicer
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: juicer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: juicer
+    spec:
+      nodeSelector:
+        dedicated: mesos-lemonade
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: local-registry
+      containers:
+      - image: eubrabigsea/juicer:latest
+        imagePullPolicy: Always
+        name: juicer
+        volumeMounts:
+        - name: "juicer-config-dev"
+          mountPath: "/usr/local/juicer/conf/juicer-config.yaml"
+          subPath: "juicer-config.yaml"
+        - name: "hdfs-site-dev"
+          mountPath: "/usr/local/juicer/conf/hdfs-site.xml"
+          subPath: "hdfs-site.xml"
+        - name: limonero-pvc
+          mountPath: /srv/storage/
+        env:
+        - name: HADOOP_CONF_DIR
+          value: /usr/local/juicer/conf
+      restartPolicy: Always
+      volumes:
+      - name: "juicer-config-dev"
+        configMap:
+          name: "juicer-config-dev"
+      - name: "hdfs-site-dev"
+        configMap:
+          name: "hdfs-site-dev"
+      - name: limonero-pvc
+        persistentVolumeClaim:
+          claimName: limonero-pvc

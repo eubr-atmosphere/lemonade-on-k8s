@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  selector:
+    app: redis # Used to connect to the deployment
+  ports: 
+  - port: 6379
+    targetPort: 6379
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redis  # Same as Service/spec/selector/app
+    spec:
+      containers:
+      - image: redis:4
+        name: redis
+        ports:
+        - containerPort: 6379

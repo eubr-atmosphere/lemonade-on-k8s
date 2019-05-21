@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: caipirinha
+spec:
+  type: ClusterIP
+  ports: 
+  - port: 23401
+  selector:
+    app: caipirinha
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caipirinha
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caipirinha
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: caipirinha
+    spec:
+      containers:
+      - image: eubrabigsea/caipirinha
+        name: caipirinha
+        volumeMounts:
+        - name: "caipirinha-config-dev"
+          mountPath: /usr/local/caipirinha/conf/caipirinha-config.yaml
+          subPath: caipirinha-config.yaml
+      restartPolicy: Always
+      volumes:
+      - name: "caipirinha-config-dev"
+        configMap:
+          name: "caipirinha-config-dev"
+ 
+

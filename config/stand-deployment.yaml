@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stand
+spec:
+  type: ClusterIP
+  ports: 
+  - port: 23404
+  selector:
+    app: stand
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stand
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stand
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: stand
+    spec:
+      containers:
+      - image: eubrabigsea/stand
+        name: stand
+        volumeMounts:
+        - name: "stand-config-dev"
+          mountPath: /usr/local/stand/conf/stand-config.yaml
+          subPath: stand-config.yaml
+      restartPolicy: Always
+      volumes:
+      - name: "stand-config-dev"
+        configMap:
+          name: "stand-config-dev"
+ 
+
