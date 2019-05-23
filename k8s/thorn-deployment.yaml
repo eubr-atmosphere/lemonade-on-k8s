@@ -27,6 +27,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/thorn
+        imagePullPolicy: Always
         name: thorn
         volumeMounts:
         - name: "thorn-config"

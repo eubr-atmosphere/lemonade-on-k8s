@@ -27,6 +27,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/limonero
+        imagePullPolicy: Always
         name: limonero
         volumeMounts:
         - name: "limonero-config"

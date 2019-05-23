@@ -27,6 +27,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/stand
+        imagePullPolicy: Always
         name: stand
         volumeMounts:
         - name: "stand-config"

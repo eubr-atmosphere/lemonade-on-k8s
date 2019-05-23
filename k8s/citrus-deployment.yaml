@@ -29,6 +29,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/citrus
+        imagePullPolicy: Always
         name: citrus
         volumeMounts:
         - name: "nginx-config"

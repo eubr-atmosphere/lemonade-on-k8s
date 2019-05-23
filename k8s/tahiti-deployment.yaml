@@ -27,6 +27,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/tahiti
+        imagePullPolicy: Always
         name: tahiti
         volumeMounts:
         - name: "tahiti-config"

@@ -27,6 +27,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/caipirinha
+        imagePullPolicy: Always
         name: caipirinha
         volumeMounts:
         - name: "caipirinha-config"
