@@ -29,17 +29,17 @@ spec:
       - image: eubrabigsea/limonero
         name: limonero
         volumeMounts:
-        - name: "limonero-config-dev"
+        - name: "limonero-config"
           mountPath: /usr/local/limonero/conf/limonero-config.yaml
           subPath: limonero-config.yaml
-        - name: limonero-pvc
+        - name: hdfs-pvc
           mountPath: /srv/storage/
       restartPolicy: Always
       volumes:
-      - name: "limonero-config-dev"
+      - name: "limonero-config"
         configMap:
-          name: "limonero-config-dev"
-      - name: limonero-pvc
+          name: "limonero-config"
+      - name: hdfs-pvc
         persistentVolumeClaim:
-          claimName: limonero-pvc
+          claimName: hdfs-pvc
 

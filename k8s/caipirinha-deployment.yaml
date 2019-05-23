@@ -29,13 +29,13 @@ spec:
       - image: eubrabigsea/caipirinha
         name: caipirinha
         volumeMounts:
-        - name: "caipirinha-config-dev"
+        - name: "caipirinha-config"
           mountPath: /usr/local/caipirinha/conf/caipirinha-config.yaml
           subPath: caipirinha-config.yaml
       restartPolicy: Always
       volumes:
-      - name: "caipirinha-config-dev"
+      - name: "caipirinha-config"
         configMap:
-          name: "caipirinha-config-dev"
+          name: "caipirinha-config"
  
 

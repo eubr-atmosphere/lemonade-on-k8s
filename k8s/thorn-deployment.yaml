@@ -29,12 +29,12 @@ spec:
       - image: eubrabigsea/thorn
         name: thorn
         volumeMounts:
-        - name: "thorn-config-dev"
+        - name: "thorn-config"
           mountPath: /usr/src/app/config/database.yml
           subPath: database.yml
       restartPolicy: Always
       volumes:
-      - name: "thorn-config-dev"
+      - name: "thorn-config"
         configMap:
-          name: "thorn-config-dev"
+          name: "thorn-config"
  

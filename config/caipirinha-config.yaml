@@ -10,8 +10,7 @@ caipirinha:
     services:
         limonero:
             url: http://limonero:23402
-            #auth_token: 7F6LVA18h8
-            auth_token: 123456
+            auth_token: ${AUTH_TOKEN}
         thorn:
             url: http://thorn:3000
     config:

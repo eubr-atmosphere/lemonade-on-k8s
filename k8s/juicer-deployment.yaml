@@ -26,25 +26,25 @@ spec:
         imagePullPolicy: Always
         name: juicer
         volumeMounts:
-        - name: "juicer-config-dev"
+        - name: "juicer-config"
           mountPath: "/usr/local/juicer/conf/juicer-config.yaml"
           subPath: "juicer-config.yaml"
-        - name: "hdfs-site-dev"
+        - name: "hdfs-site"
           mountPath: "/usr/local/juicer/conf/hdfs-site.xml"
           subPath: "hdfs-site.xml"
-        - name: limonero-pvc
+        - name: hdfs-pvc
           mountPath: /srv/storage/
         env:
         - name: HADOOP_CONF_DIR
           value: /usr/local/juicer/conf
       restartPolicy: Always
       volumes:
-      - name: "juicer-config-dev"
+      - name: "juicer-config"
         configMap:
-          name: "juicer-config-dev"
-      - name: "hdfs-site-dev"
+          name: "juicer-config"
+      - name: "hdfs-site"
         configMap:
-          name: "hdfs-site-dev"
-      - name: limonero-pvc
+          name: "hdfs-site"
+      - name: hdfs-pvc
         persistentVolumeClaim:
-          claimName: limonero-pvc
+          claimName: hdfs-pvc

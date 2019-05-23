@@ -8,7 +8,6 @@ cecho(){
     NC='\033[0m' # No Color
 
     printf "${!1}${2} ${NC}\n"
-    read
 }
 
 ##
@@ -28,12 +27,13 @@ STORAGE_PATH=/srv/lemonade
 # Path for kubectl program
 KUBECTL=kubectl
 
-# MySQL port is exposed in host
-MYSQL_NODE_PORT=33070 
+# MySQL port is exposed in host (verify K8s supported range: 30000-32767)
+# If you don't want to expose this port, edit the file ./k8s/mysql-deployment.yaml
+MYSQL_NODE_PORT=31006 
 
-# Lemonade Citrus port. This is the port exposed in nodes
+# Lemonade Citrus port. This is the port exposed in nodes (verify K8s supported range: 30000-32767)
 # and that allows access to Lemoande web interface
-CITRUS_PORT=35001
+CITRUS_PORT=31001
 
 # Lemonade Secret is used by services to authenticate when calling APIs
 # Please, use a different token, otherwise, it can open to attacks
@@ -43,64 +43,66 @@ export NAMESPACE STORAGE_PATH KUBECTL MYSQL_NODE_PORT CITRUS_PORT AUTH_TOKEN
 
 cecho "GREEN"  "Installing 🍋 Lemonade in the namespace ${NAMESPACE}"
 cecho "GREEN" "Creating namespace ${NAMESPACE} in Kubernetes"
-cat ./config/namespace.yaml | envsubst #| $KUBECTL apply -f -
+envsubst < ./k8s/namespace.yaml | $KUBECTL apply -f -
 
-cecho "GREEN"  "Creating persistent volume ${NAMESPACE}-pv used by MySQL (base path ${STORAGE_PATH})"
-cat ./config/mysql-data-pv.yaml | envsubst #| $KUBECTL apply -f -n $NAMESPACE -
+cecho "GREEN"  "Creating persistent volume mysql-data-$NAMESPACE-pv used by MySQL (base path ${STORAGE_PATH}). Please, be sure that the path is correct and it points to a distributed filesystem!"
+envsubst < ./k8s/mysql-data-pv.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
-cecho "GREEN" "Creating MySQL persistent volume clain mysql-data-pvc"
-cat ./config/mysql-data-pvc.yaml | envsubst # | $KUBECTL apply -f -n $NAMESPACE -
+cecho "GREEN" "Creating MySQL persistent volume clain mysql-data-pvc in mysql-data-${NAMESPACE}-pv"
+envsubst < ./k8s/mysql-data-pvc.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing MySQL service port=${MYSQL_NODE_PORT}"
-cat ./config/mysql-deployment.yaml | envsubst #| $KUBECTL apply -f -n $NAMESPACE -
+envsubst < ./k8s/mysql-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Redis service"
-cat ./config/redis-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/redis-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Mapping many services config files"
-
-# Used by Limonero and Juicer
-##$KUBECTL create configmap hdfs-site --from-file extra/hdfs-site.xml -n ${NAMESPACE}
+# Used by Juicer
+$KUBECTL create configmap hdfs-site --from-file config/hdfs-site.xml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
 # Used by Citrus
-##$KUBECTL create configmap nginx-config --from-file extra/nginx.conf -n ${NAMESPACE}
+$KUBECTL create configmap nginx-config --from-file config/nginx.conf -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
 
-cat ./extra/caipirinha-config.yaml  | envsubst #| $KUBECTL create configmap caipirinha-config --from-file -n ${NAMESPACE} -
-cat ./extra/juicer-config.yaml  | envsubst #| $KUBECTL create configmap juicer-config --from-file -n ${NAMESPACE} -
-cat ./extra/limonero-config.yaml  | envsubst #| $KUBECTL create configmap limonero-config --from-file -n ${NAMESPACE} -
-cat ./extra/stand-config.yaml  | envsubst #| $KUBECTL create configmap stand-config --from-file -n ${NAMESPACE} -
-cat ./extra/tahiti-config.yaml  | envsubst #| $KUBECTL create configmap tahiti-config --from-file -n ${NAMESPACE} -
-cat ./extra/database.yml | envsubst #| $KUBECTL create configmap thorn-config --from-file extra/database.yml -n ${NAMESPACE} -
+# Creates or replaces configmaps. See https://stackoverflow.com/a/38216458/1646932
+envsubst < ./config/caipirinha-config.yaml > /tmp/caipirinha-config.yaml && $KUBECTL create configmap caipirinha-config --from-file /tmp/caipirinha-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
+envsubst < ./config/juicer-config.yaml > /tmp/juicer-config.yaml && $KUBECTL create configmap juicer-config --from-file /tmp/juicer-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
+envsubst < ./config/limonero-config.yaml > /tmp/limonero-config.yaml &&  $KUBECTL create configmap limonero-config --from-file /tmp/limonero-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
+envsubst < ./config/stand-config.yaml > /tmp/stand-config.yaml && $KUBECTL create configmap stand-config --from-file /tmp/stand-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
+envsubst < ./config/tahiti-config.yaml > /tmp/tahiti-config.yaml && $KUBECTL create configmap tahiti-config --from-file /tmp/tahiti-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
+$KUBECTL create configmap thorn-config --from-file ./config/database.yml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL replace -f -
 
 cecho "GREEN"  "Creating persistent volume hdfs-${NAMESPACE}-pv used by HDFS (base path ${STORAGE_PATH})"
-cat ./config/hdfs-pv.yaml | envsubst #| $KUBECTL apply -f -n $NAMESPACE -
+envsubst < ./k8s/hdfs-pv.yaml | $KUBECTL apply -n $NAMESPACE -f -
 cecho "GREEN" "Creating HDFS persistent volume clain limonero-data-pvc"
-cat ./config/hdfs-pvc.yaml | envsubst # | $KUBECTL apply -f -n $NAMESPACE -
+envsubst < ./k8s/hdfs-pvc.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Citrus + nginx services using port ${CITRUS_PORT}"
-cat ./config/citrus-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/citrus-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Caipirinha service"
-cat ./config/caipirinha-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/caipirinha-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Juicer service"
-cat ./config/juicer-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/juicer-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Limonero service"
-cat ./config/limonero-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/limonero-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
+# Under development
 # cecho "GREEN"  "Installing Lemonade Seed service"
-# cat ./config/seed-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+# envsubst < ./k8s/seed-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Stand service"
-cat ./config/stand-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/stand-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Tahiti service"
-cat ./config/tahiti-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/tahiti-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Thorn service"
-cat ./config/thorn-deployment.yaml | envsubst #| $KUBECTL apply -f -n    $NAMESPACE -
+envsubst < ./k8s/thorn-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 HOSTNAME=`hostname -A`
 cecho "GREEN"  "Done. You may access Lemonade by this URL: http://${HOSTNAME%% }:${CITRUS_PORT}"
 
-cecho "RED" "Thank you for flying with us!"
+cecho "RED" "Thanks for flying with us! Hope to see you soon!"
+

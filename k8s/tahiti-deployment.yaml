@@ -29,13 +29,13 @@ spec:
       - image: eubrabigsea/tahiti
         name: tahiti
         volumeMounts:
-        - name: "tahiti-config-dev"
+        - name: "tahiti-config"
           mountPath: /usr/local/tahiti/conf/tahiti-config.yaml
           subPath: tahiti-config.yaml
       restartPolicy: Always
       volumes:
-      - name: "tahiti-config-dev"
+      - name: "tahiti-config"
         configMap:
-          name: "tahiti-config-dev"
+          name: "tahiti-config"
  
 
