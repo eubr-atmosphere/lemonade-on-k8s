@@ -16,8 +16,6 @@ spec:
       labels:
         app: juicer
     spec:
-      nodeSelector:
-        dedicated: mesos-lemonade
       restartPolicy: Always
       imagePullSecrets:
       - name: local-registry
