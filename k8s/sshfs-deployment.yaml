@@ -1,0 +1,91 @@
+#### Creation of a Persistent Volume
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: atm-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 128M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/volume/vol001"
+---
+#### Creation of a Persistent Volume Claim
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: task-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 32M 
+---
+#### Register Protected data
+kind: Secret
+apiVersion: v1
+metadata:
+  name: sshfs-secret
+data:
+  sshprivkey: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLVxuTUlJRW93SUJBQUtDQVFFQXd4T0U0L1I1VDdMeldKcms3OVZLb2NPTDFNem5QOXdpSHphcW9zT1k1Y3Q0Z0dycVxuL2NNT0xwWGRyTWpPRGh1Yy9ORU9DbHQycHJFeFgvc0dQamFRUWgzRTVNWWk5NURtanE2a24vM1Z2dmZUUFlCbVxuM3N2NmJZZEJnNHNFdDQ2R3BKNDFISDFIZ2ovckZPUmtUWlZuNkt5VjFnSUhadUNZUmUxeWhUcEVubVdDYU5VQlxuUW5lbGNEWTVncnh5QTRKQW1ERVU2TVJNZ2k1R284M1RjamNvWG45S1Z5WUtZNGdYaC9sWEFHVGRVaGloVHY2U1xuL2hIS0phYVlEOEl3bFR0Y0V1MHlreCt3NERsaDV0WCtXd2Fvb3BmSzZ3UlMxSHV1dE9ETEowcVdNU2lYakRZNFxuaFUrdEFRaVVNZFNQVkVqNyt6WXA2Wkp4UVVYS1dzNTQrbTcxUlFJREFRQUJBb0lCQUV1UnlDMDJpN2dnTHJ6b1xuWkQrMGRORHRtOEc0RHUxaUxhWEIyNkJwL1ZVbjJXcUdBTHFGVVgwaWVWbHlBTURlV1pabXRmVzFNT1dxUnVKVFxuc0R0eGo3ak5KM1VvZkd0REtzMmpRZ3Jvbm1ENFNGRE82UXJ1SWZsRUtGRDVEYjY5NjlMaHB0bCtmckVxYWJzU1xuTHZrUEk4Mnk3ZWlWcUtCbDZSZE53TXR6b3hsb3RFK0sxQmN3aGJkNmRkWWJTdmQ0N2JQRGhod2pDUldXaGlWNVxuY1BCSUlBRjNodVN5L0VJK0VlQ1RKdk9Ldkwyd3ZPbHFvVlpIdE8vbXRIdkdQSmI4RjAyc0piVVlNM0U2ZkgzNlxuNk40VGZKYm0xc01QOE5xb0VFdFMxeGNrOVhiMitSSHFZVkNQb2dQamczNlRnSVpXVVpLZ3BsTU5XZVY5SEQ1blxuZll3Tm5BRUNnWUVBNHJCcWt0UWdxS0RLaHhEdEh5Q3NsUVdXdFpPdVo1R0hLenNiR3czc3RzVUNJcTJEQUVFUFxuS2EramQ3bU80aWpST0g1R2FHa0NsWkhWa3ovSitxMWtGM09QeGxLL2o1SkNGeS9Dd2MwUjBKOUl1eVNPbTlTbVxuVHI5akdkd2lib3J5YldKZVNCY2Qwd0E3aGc0YkVFNEFINWk2cXQ3b0ZmajBMVUxDMmgxRUN3VUNnWUVBM0V5eFxuT0tVNmJBTFlRMUdTVS9KOFBPT2ZKenN0OWgyMXRlMjVUNHZaQllkWDRmYVRRbU5pL0hXckJhWEQza2NjZDhIclxuNHhub3ZCQTF6ME9ldnYwWERhdDRma1NzQ0lacUJsZ2lpT1daUWpxSUtHWndCMUdLZkRMdHJQK0hzelNxdXNyU1xuZGlYOHZ2dnlERGtIOUhWcW54RkVndXF2RU9zVG1sRFduMFdaMVVFQ2dZRUFyYzRsYUQ1TWEvNGNTa0tvQzkyNVxuZE9pOERLd1daRUlvS1BWQWF4WGFFS2dzWXZvMkh0UERGR3NlSW9XYkQ3dkw3a3lqSHhxa2FKbFA3MzVSRm1vcVxuKy9BV3BEQjl2MDZjYmJxbzBINnkwZ25PY2U0dGlUMFo1ZmJIdk9RVFlqNFdjZGVpQWhQM1FmaERxeHpWazBLNlxueFg4TVlFWllHOEN0TnFhaFR5cHhLU0VDZ1lBckJEcXl3ZWkzZ0pLMENuQ1ZQY3N1cEkvR1BGTU1OTjd2aUZ6Z1xuQUlHL0I1K01ldlprUnozajZDSWQ5ekZZN08vTkhxdXQ2N2c3U0xzSkhyNFhzeG5XVEg0NXdiVUo4UjB3NGZMVVxuWW1qYnVzd3RmMXN1d3FoVStpalkyQWlxWUlWWjloTEVpVVJpRXBZLzlyN3I2Q1dLcS9lQnpNdWtkUktkMWwwaVxuT3BnQVFRS0JnQjNWbDdaWFFwbENLdXRwRGVHOE1CTit5S1NUTnI1NmFlRnNQb25EWnM5bWo0RUN0aHBQMFcvK1xubS9iYUdLWmpTMVlvb0RrNXJmUU5XZVJqRE1mNlNra1dEUVI0ZDZIenlJTytOVXJEMlhBeDlQbUNpV1NDQlA1d1xuVEdiTm9SbDlDaU0wT2x4YW56d0NBdFZrN2NwSTNBMVhGdFlqU1U0bDdWZnRKMHY2V1l4K1xuLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0=
+  sshpubkey: c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFEREU0VGo5SGxQc3ZOWW11VHYxVXFodzR2VXpPYy8zQ0lmTnFxaXc1amx5M2lBYXVyOXd3NHVsZDJzeU00T0c1ejgwUTRLVzNhbXNURmYrd1krTnBCQ0hjVGt4aUwza09hT3JxU2YvZFcrOTlNOWdHYmV5L3B0aDBHRGl3UzNqb2FrbmpVY2ZVZUNQK3NVNUdSTmxXZm9ySlhXQWdkbTRKaEY3WEtGT2tTZVpZSm8xUUZDZDZWd05qbUN2SElEZ2tDWU1SVG94RXlDTGthanpkTnlOeWhlZjBwWEpncGppQmVIK1ZjQVpOMVNHS0ZPL3BMK0Vjb2xwcGdQd2pDVk8xd1M3VEtUSDdEZ09XSG0xZjViQnFpaWw4cnJCRkxVZTY2MDRNc25TcFl4S0plTU5qaUZUNjBCQ0pReDFJOVVTUHY3TmlucGtuRkJSY3Bhem5qNmJ2VkYgdWJ1bnR1QGt1YmVzZXJ2ZXIubG9jYWxkb21haW4=
+---
+#### Create Server Deployment
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: sshserver
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sshserver
+    spec:
+      volumes:
+        - name: sshserver
+          persistentVolumeClaim:
+           claimName: task-pv-claim
+      containers:
+        - name: sshd
+          image: eubraatmosphere/eubraatmosphere_autobuild:ub16_sshd
+          env:
+            - name: SSHKEY
+              valueFrom:
+                secretKeyRef:
+                  name: sshfs-secret
+                  key: sshpubkey
+          ports:
+            - containerPort: 22
+          volumeMounts:
+            - mountPath: "/share/vol001"
+              name: sshserver
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sshserver
+spec:
+  selector:
+    app: sshserver
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+---
+#### Register Environment Variables
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: sshfs-configmap
+data:
+  server: sshserver.atmosphere.svc.cluster.local
+  mountpoint: /mnt
+
