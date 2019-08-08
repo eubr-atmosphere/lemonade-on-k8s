@@ -85,6 +85,9 @@ envsubst < ./k8s/caipirinha-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 cecho "GREEN"  "Installing Lemonade Juicer service"
 envsubst < ./k8s/juicer-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
+cecho "GREEN"  "Installing ssh filesystem"
+envsubst < ./k8s/sshfs-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
+
 cecho "GREEN"  "Installing Lemonade Limonero service"
 envsubst < ./k8s/limonero-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
