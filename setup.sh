@@ -85,6 +85,8 @@ envsubst < ./k8s/caipirinha-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 cecho "GREEN"  "Installing Lemonade Juicer service"
 envsubst < ./k8s/juicer-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
+#$KUBECTL expose deployment juicer --port=29413 --type=ClusterIP --cluster-ip=None -n $NAMESPACE
+
 cecho "GREEN"  "Installing Lemonade Limonero service"
 envsubst < ./k8s/limonero-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 

@@ -12,7 +12,7 @@ juicer:
     services:
         tahiti:
             url: http://tahiti:23403
-            auth_token: '${AUTH_TOKEN}'
+            auth_token: '${AUTH_TOKEN}' 
         limonero:
             url: http://limonero:23402
             auth_token: '${AUTH_TOKEN}'
@@ -46,18 +46,18 @@ juicer:
         # other ports can be configured.
         # In more restrictive network configuration, 
         # other ports can be configured.
-        spark.driver.host: your.hostname
-        spark.driver.bindAddress: 0.0.0.0
+        # spark.driver.host: your.hostname
+        # spark.driver.bindAddress: 0.0.0.0
         spark.port.maxRetries: 200
         spark.broadcast.factory: org.apache.spark.broadcast.HttpBroadcastFactory
-        spark.mesos.executor.home: /opt/spark-2.3.1-bin-hadoop2.7
-        spark.mesos.rejectOfferDuration: 30s
-        spark.dynamicAllocation.enabled: true
-        spark.shuffle.service.enabled: true
+        # spark.mesos.executor.home: /opt/spark-2.3.1-bin-hadoop2.7
+        # spark.mesos.rejectOfferDuration: 30s
+        # spark.dynamicAllocation.enabled: true
+        # spark.shuffle.service.enabled: true
 
 
         spark.localdir: /tmp
-        spark.eventLog.enabled: false
-        spark.eventLog.dir: hdfs://<namenode>:9000/path 
-        spark.history.fs.logDirectory: hdfs://<namenode>:9000/path
+        # spark.eventLog.enabled: false
+        # spark.eventLog.dir: hdfs://<namenode>:9000/path 
+        # spark.history.fs.logDirectory: hdfs://<namenode>:9000/path
         spark.driver.extraClassPath: "/usr/local/juicer/jars/lemonade-spark-ext-1.0-SNAPSHOT.jar:/usr/local/juicer/jars/spark-lof_2.11-1.0.jar"

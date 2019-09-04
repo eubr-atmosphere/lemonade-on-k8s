@@ -16,13 +16,16 @@ spec:
       labels:
         app: juicer
     spec:
-      nodeSelector:
-        dedicated: mesos-lemonade
+      serviceAccountName: jumppod
+     # nodeSelector:
+     #   dedicated: mesos-lemonade
       restartPolicy: Always
       imagePullSecrets:
       - name: local-registry
       containers:
-      - image: eubrabigsea/juicer:latest
+      - image: lucasmsp/juicer:spark #eubrabigsea/juicer:latest
+        command: ['/usr/local/juicer/sbin/juicer-daemon.sh']
+        args: ['docker']
         imagePullPolicy: Always
         name: juicer
         volumeMounts:
