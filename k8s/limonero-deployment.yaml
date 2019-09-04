@@ -26,7 +26,7 @@ spec:
         app: limonero
     spec:
       containers:
-      - image: eubrabigsea/limonero
+      - image: eubrabigsea/limonero:latest
         imagePullPolicy: Always
         name: limonero
         volumeMounts:

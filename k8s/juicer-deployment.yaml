@@ -17,8 +17,6 @@ spec:
         app: juicer
     spec:
       serviceAccountName: jumppod
-     # nodeSelector:
-     #   dedicated: mesos-lemonade
       restartPolicy: Always
       imagePullSecrets:
       - name: local-registry
