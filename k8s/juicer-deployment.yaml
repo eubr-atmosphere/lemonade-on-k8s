@@ -23,7 +23,7 @@ spec:
       imagePullSecrets:
       - name: local-registry
       containers:
-      - image: lucasmsp/juicer:spark #eubrabigsea/juicer:latest
+      - image: eubrabigsea/juicer:latest
         command: ['/usr/local/juicer/sbin/juicer-daemon.sh']
         args: ['docker']
         imagePullPolicy: Always
