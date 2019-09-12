@@ -25,6 +25,9 @@ spec:
       labels:
         app: limonero
     spec:
+      nodeSelector:
+          region: europe
+
       containers:
       - image: eubrabigsea/limonero:latest
         imagePullPolicy: Always

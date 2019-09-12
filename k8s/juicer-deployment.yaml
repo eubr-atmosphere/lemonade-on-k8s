@@ -16,6 +16,9 @@ spec:
       labels:
         app: juicer
     spec:
+      nodeSelector:
+          region: europe
+
       serviceAccountName: jumppod
       restartPolicy: Always
       imagePullSecrets:

@@ -25,6 +25,8 @@ spec:
       labels:
         app: caipirinha
     spec:
+      nodeSelector:
+          region: europe
       containers:
       - image: eubrabigsea/caipirinha:latest
         imagePullPolicy: Always

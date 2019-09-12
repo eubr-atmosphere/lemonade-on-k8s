@@ -24,6 +24,9 @@ spec:
       labels:
         app: redis  # Same as Service/spec/selector/app
     spec:
+      nodeSelector:
+          region: europe
+
       containers:
       - image: redis:4
         name: redis

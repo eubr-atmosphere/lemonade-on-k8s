@@ -25,6 +25,8 @@ spec:
       labels:
         app: mysql  # Same as Service/spec/selector/app
     spec:
+      nodeSelector:
+          region: europe
       containers:
        - image: mysql:5.7
          name: mysql

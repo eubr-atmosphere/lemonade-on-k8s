@@ -25,6 +25,9 @@ spec:
       labels:
         app: stand
     spec:
+      nodeSelector:
+          region: europe
+
       containers:
       - image: eubrabigsea/stand:latest
         imagePullPolicy: Always

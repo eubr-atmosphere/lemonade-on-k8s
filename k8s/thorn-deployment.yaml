@@ -25,6 +25,9 @@ spec:
       labels:
         app: thorn
     spec:
+      nodeSelector:
+          region: europe
+
       containers:
       - image: eubrabigsea/thorn:latest
         imagePullPolicy: Always

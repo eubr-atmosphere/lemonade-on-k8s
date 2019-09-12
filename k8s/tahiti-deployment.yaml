@@ -25,6 +25,9 @@ spec:
       labels:
         app: tahiti
     spec:
+      nodeSelector:
+          region: europe
+
       containers:
       - image: eubrabigsea/tahiti:latest
         imagePullPolicy: Always

@@ -27,6 +27,8 @@ spec:
       labels:
         app: citrus
     spec:
+      nodeSelector:
+          region: europe
       containers:
       - image: eubrabigsea/citrus:latest
         imagePullPolicy: Always
