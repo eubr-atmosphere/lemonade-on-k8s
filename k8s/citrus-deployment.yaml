@@ -5,7 +5,9 @@ metadata:
 spec:
   type: NodePort # Expose services to outside
   ports:
-  - port: 8080
+  - targetPort: 8080
+    port: 8080
+    protocol: TCP
     nodePort: ${CITRUS_PORT}
   selector:
     app: citrus  # Used to connect to the deployment
@@ -28,7 +30,7 @@ spec:
         app: citrus
     spec:
       containers:
-      - image: eubrabigsea/citrus
+      - image: eubrabigsea/citrus:latest
         imagePullPolicy: Always
         name: citrus
         volumeMounts:

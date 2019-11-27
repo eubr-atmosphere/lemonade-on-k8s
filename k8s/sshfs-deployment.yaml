@@ -2,7 +2,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: atm-pv-volume
+  name: atm-pv-volume2
   labels:
     type: local
 spec:

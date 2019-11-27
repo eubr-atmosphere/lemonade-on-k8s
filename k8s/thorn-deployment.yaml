@@ -26,9 +26,20 @@ spec:
         app: thorn
     spec:
       containers:
-      - image: eubrabigsea/thorn
+      - image: eubrabigsea/thorn:latest
         imagePullPolicy: Always
         name: thorn
+        env:
+         - name: RAILS_CORS_ORIGINS
+           value: "*"
+         - name: LEMONADE_ENV
+           value: "CHANGEME.lemonade.org.br"
+         - name: EMAIL_PROVIDER_USERNAME
+           value: "use_a_gmail_account_here_without_domain"
+         - name: EMAIL_PROVIDER_PASSWORD
+           value: "gmail_user_password"
+         - name: DEVISE_JWT_SECRET_KEY
+           value: "98c1e17b0c3d2d8ccf480a3794e47afd7348d865a6f6e97eb0010e795e62"
         volumeMounts:
         - name: "thorn-config"
           mountPath: /usr/src/app/config/database.yml

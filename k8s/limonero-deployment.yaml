@@ -26,7 +26,8 @@ spec:
         app: limonero
     spec:
       containers:
-      - image: eubraatmosphere/eubraatmosphere_autobuild:ub16_limonero_sshfsclient
+      # - image: eubraatmosphere/eubraatmosphere_autobuild:ub16_limonero_sshfsclient
+      - image: eubraatmosphere/eubraatmosphere_autobuild:ub18_limonero_sshfsclient
         imagePullPolicy: Always
         name: limonero
         volumeMounts:
@@ -35,6 +36,9 @@ spec:
           subPath: limonero-config.yaml
         - name: hdfs-pvc
           mountPath: /srv/storage/
+          # command: ['sh', '-c', 'sleep 3600']
+        securityContext:
+          privileged: true
         env:
           - name: SSHPRIVKEY
             valueFrom:

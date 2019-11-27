@@ -16,13 +16,22 @@ spec:
       labels:
         app: juicer
     spec:
+      serviceAccountName: jumppod
       restartPolicy: Always
       imagePullSecrets:
       - name: local-registry
       containers:
-      - image: eubrabigsea/juicer:latest
-        imagePullPolicy: Always
+      - image: eubraatmosphere/eubraatmosphere_autobuild:ub18_juicer_sshfsclient
+        # - image: eubrabigsea/juicer:latest
+        # IMPORTANT: FOR AN UNKNOWN REASON IT DOES NOT START MANUALLY THE MOUNTING
         name: juicer
+        # command: ['/usr/local/juicer/sbin/juicer-daemon.sh']
+        # args: ['docker']
+        args: ['/usr/local/juicer/sbin/juicer-daemon.sh', 'docker']
+        imagePullPolicy: Always
+        # command: ['sh', '-c', 'sleep 3600']
+        securityContext:
+          privileged: true
         volumeMounts:
         - name: "juicer-config"
           mountPath: "/usr/local/juicer/conf/juicer-config.yaml"
@@ -35,6 +44,26 @@ spec:
         env:
         - name: HADOOP_CONF_DIR
           value: /usr/local/juicer/conf
+        - name: SSHPRIVKEY
+          valueFrom:
+            secretKeyRef:
+              name: sshfs-secret
+              key: sshprivkey
+        - name: SSHPUBKEY
+          valueFrom:
+            secretKeyRef:
+              name: sshfs-secret
+              key: sshpubkey
+        - name: SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: sshfs-configmap
+              key: server
+        - name: MOUNTPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: sshfs-configmap
+              key: mountpoint
       restartPolicy: Always
       volumes:
       - name: "juicer-config"
