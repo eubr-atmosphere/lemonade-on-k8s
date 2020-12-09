@@ -9,8 +9,6 @@ spec:
   selector:
     matchLabels:
       app: juicer
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

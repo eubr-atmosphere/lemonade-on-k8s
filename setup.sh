@@ -22,7 +22,7 @@ NAMESPACE=$1
 
 # Where data files required by Lemonade are going to be stored. 
 # In a cluster deployment, it must be a distributed file system.
-STORAGE_PATH=/srv/lemonade
+STORAGE_PATH=/data/lemonade-minikube
 
 # Path for kubectl program
 KUBECTL=kubectl
@@ -59,17 +59,17 @@ envsubst < ./k8s/redis-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Mapping many services config files"
 # Used by Juicer
-$KUBECTL create configmap hdfs-site --from-file config/hdfs-site.xml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
+$KUBECTL create configmap hdfs-site --from-file config/hdfs-site.xml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 # Used by Citrus
-$KUBECTL create configmap nginx-config --from-file config/nginx.conf -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
+$KUBECTL create configmap nginx-config --from-file config/nginx.conf -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 
 # Creates or replaces configmaps. See https://stackoverflow.com/a/38216458/1646932
-envsubst < ./config/caipirinha-config.yaml > /tmp/caipirinha-config.yaml && $KUBECTL create configmap caipirinha-config --from-file /tmp/caipirinha-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
-envsubst < ./config/juicer-config.yaml > /tmp/juicer-config.yaml && $KUBECTL create configmap juicer-config --from-file /tmp/juicer-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
-envsubst < ./config/limonero-config.yaml > /tmp/limonero-config.yaml &&  $KUBECTL create configmap limonero-config --from-file /tmp/limonero-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
-envsubst < ./config/stand-config.yaml > /tmp/stand-config.yaml && $KUBECTL create configmap stand-config --from-file /tmp/stand-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
-envsubst < ./config/tahiti-config.yaml > /tmp/tahiti-config.yaml && $KUBECTL create configmap tahiti-config --from-file /tmp/tahiti-config.yaml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
-$KUBECTL create configmap thorn-config --from-file ./config/database.yml -n ${NAMESPACE} -o yaml --dry-run | $KUBECTL apply -f -
+envsubst < ./config/caipirinha-config.yaml > /tmp/caipirinha-config.yaml && $KUBECTL create configmap caipirinha-config --from-file /tmp/caipirinha-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+envsubst < ./config/juicer-config.yaml > /tmp/juicer-config.yaml && $KUBECTL create configmap juicer-config --from-file /tmp/juicer-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+envsubst < ./config/limonero-config.yaml > /tmp/limonero-config.yaml &&  $KUBECTL create configmap limonero-config --from-file /tmp/limonero-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+envsubst < ./config/stand-config.yaml > /tmp/stand-config.yaml && $KUBECTL create configmap stand-config --from-file /tmp/stand-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+envsubst < ./config/tahiti-config.yaml > /tmp/tahiti-config.yaml && $KUBECTL create configmap tahiti-config --from-file /tmp/tahiti-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+$KUBECTL create configmap thorn-config --from-file ./config/thorn-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 
 cecho "GREEN"  "Creating persistent volume hdfs-${NAMESPACE}-pv used by HDFS (base path ${STORAGE_PATH})"
 envsubst < ./k8s/hdfs-pv.yaml | $KUBECTL apply -n $NAMESPACE -f -
@@ -103,8 +103,11 @@ envsubst < ./k8s/tahiti-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 cecho "GREEN"  "Installing Lemonade Thorn service"
 envsubst < ./k8s/thorn-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
+cecho "GREEN"  "Installing Lemonade Thorn worker"
+envsubst < ./k8s/thorn-worker-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
+
 HOSTNAME=`hostname -A`
 cecho "GREEN"  "Done. You may access Lemonade by this URL: http://${HOSTNAME%% }:${CITRUS_PORT}"
 
-cecho "RED" "Thanks for flying with us! Hope to see you soon!"
+cecho "RED" "Thanks for flying ✈️  with us! Hope to see you soon!"
 
