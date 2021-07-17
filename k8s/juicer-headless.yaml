@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: juicer
+spec:
+  clusterIP: None
+  selector:
+    app: juicer 
+  ports:
+    - protocol: TCP
+      port: 29413
+      targetPort: 29413
+      name: driver-port

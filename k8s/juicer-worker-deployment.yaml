@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: juicer-worker
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: juicer-worker
+  template:
+    metadata:
+      labels:
+        app: juicer-worker
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: local-registry
+      containers:
+      - image: 150.164.203.230:5000/eubrabigsea/juicer:latest
+        command: ['/usr/local/bin/rq']
+        args: ['worker', '--url', 'redis://redis', '-v', 'juicer']
+        imagePullPolicy: Always
+        name: juicer-worker
+        volumeMounts:
+        - name: "juicer-config"
+          mountPath: "/usr/local/juicer/conf/juicer-config.yaml"
+          subPath: "juicer-config.yaml"
+        - name: "hdfs-site"
+          mountPath: "/usr/local/juicer/conf/hdfs-site.xml"
+          subPath: "hdfs-site.xml"
+        - name: hdfs-pvc
+          mountPath: /srv/storage/
+        env:
+        - name: JUICER_CONF
+          value: /usr/local/juicer/conf/juicer-config.yaml
+        - name: HADOOP_CONF_DIR
+          value: /usr/local/juicer/conf
+      restartPolicy: Always
+      volumes:
+      - name: "juicer-config"
+        configMap:
+          name: "juicer-config"
+      - name: "hdfs-site"
+        configMap:
+          name: "hdfs-site"
+      - name: hdfs-pvc
+        persistentVolumeClaim:
+          claimName: hdfs-pvc
