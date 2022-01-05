@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: redis
 spec:
+  type: NodePort # Expose services to outside
   selector:
     app: redis # Used to connect to the deployment
   ports: 
   - port: 6379
+    nodePort: ${REDIS_PORT}
     targetPort: 6379
 ---
 apiVersion: apps/v1 

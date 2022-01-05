@@ -26,8 +26,8 @@ spec:
         app: limonero
     spec:
       containers:
-      - image: eubrabigsea/limonero:latest
-        imagePullPolicy: Always
+      - image: 150.164.203.230:5000/eubrabigsea/limonero:latest
+        imagePullPolicy: IfNotPresent 
         name: limonero
         volumeMounts:
         - name: "limonero-config"

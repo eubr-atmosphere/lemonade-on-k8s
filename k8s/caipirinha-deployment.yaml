@@ -26,7 +26,7 @@ spec:
         app: caipirinha
     spec:
       containers:
-      - image: eubrabigsea/caipirinha:latest
+      - image: 150.164.203.230:5000/eubrabigsea/caipirinha:latest
         imagePullPolicy: Always
         name: caipirinha
         volumeMounts:

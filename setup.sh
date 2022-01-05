@@ -22,7 +22,7 @@ NAMESPACE=$1
 
 # Where data files required by Lemonade are going to be stored. 
 # In a cluster deployment, it must be a distributed file system.
-STORAGE_PATH=/data/lemonade-minikube
+STORAGE_PATH=/mnt/kubernetes_vol/${NAMESPACE}
 
 # Path for kubectl program
 KUBECTL=kubectl
@@ -33,7 +33,7 @@ MYSQL_NODE_PORT=31006
 
 # Lemonade Citrus port. This is the port exposed in nodes (verify K8s supported range: 30000-32767)
 # and that allows access to Lemoande web interface
-CITRUS_PORT=31001
+CITRUS_PORT=31011
 
 # Lemonade Secret is used by services to authenticate when calling APIs
 # Please, use a different token, otherwise, it can open to attacks
@@ -55,6 +55,7 @@ cecho "GREEN"  "Installing MySQL service port=${MYSQL_NODE_PORT}"
 envsubst < ./k8s/mysql-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Redis service"
+REDIS_PORT=32377
 envsubst < ./k8s/redis-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Mapping many services config files"
@@ -82,10 +83,12 @@ envsubst < ./k8s/citrus-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 cecho "GREEN"  "Installing Lemonade Caipirinha service"
 envsubst < ./k8s/caipirinha-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
-cecho "GREEN"  "Installing Lemonade Juicer service"
+cecho "GREEN"  "Installing Lemonade Juicer service and worker"
 envsubst < ./k8s/juicer-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
+envsubst < ./k8s/juicer-headless.yaml | $KUBECTL apply -n $NAMESPACE -f -
+envsubst < ./k8s/juicer-worker-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
-#$KUBECTL expose deployment juicer --port=29413 --type=ClusterIP --cluster-ip=None -n $NAMESPACE
+# $KUBECTL expose deployment juicer --port=29413 --type=ClusterIP --cluster-ip=None -n $NAMESPACE
 
 cecho "GREEN"  "Installing Lemonade Limonero service"
 envsubst < ./k8s/limonero-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
@@ -109,5 +112,6 @@ envsubst < ./k8s/thorn-worker-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f 
 HOSTNAME=`hostname -A`
 cecho "GREEN"  "Done. You may access Lemonade by this URL: http://${HOSTNAME%% }:${CITRUS_PORT}"
 
+cecho "YELLOW" "Remember to run '$KUBECTL expose deployment juicer --port=29413 --type=ClusterIP --cluster-ip=None -n $NAMESPACE'"
 cecho "RED" "Thanks for flying ✈️  with us! Hope to see you soon!"
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - image: eubrabigsea/thorn:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         name: thorn-worker
         command: ["/usr/bin/dumb-init", "--", "/usr/local/bin/entrypoint", "worker"]
         volumeMounts:

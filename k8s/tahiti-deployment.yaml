@@ -26,7 +26,7 @@ spec:
         app: tahiti
     spec:
       containers:
-      - image: eubrabigsea/tahiti:latest
+      - image: 150.164.203.230:5000/eubrabigsea/tahiti:latest
         imagePullPolicy: Always
         name: tahiti
         volumeMounts:

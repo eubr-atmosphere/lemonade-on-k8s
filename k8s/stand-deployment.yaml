@@ -26,7 +26,7 @@ spec:
         app: stand
     spec:
       containers:
-      - image: eubrabigsea/stand:latest
+      - image: 150.164.203.230:5000/eubrabigsea/stand
         imagePullPolicy: Always
         name: stand
         volumeMounts:

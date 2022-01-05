@@ -19,7 +19,7 @@ spec:
       imagePullSecrets:
       - name: local-registry
       containers:
-      - image: eubrabigsea/juicer:latest
+      - image: 150.164.203.230:5000/eubrabigsea/juicer:latest
         command: ['/usr/local/juicer/sbin/juicer-daemon.sh']
         args: ['docker']
         imagePullPolicy: Always
@@ -34,6 +34,8 @@ spec:
         - name: hdfs-pvc
           mountPath: /srv/storage/
         env:
+        - name: HADOOP_USER_NAME
+          value: hadoop
         - name: HADOOP_CONF_DIR
           value: /usr/local/juicer/conf
       restartPolicy: Always

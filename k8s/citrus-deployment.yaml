@@ -28,7 +28,7 @@ spec:
         app: citrus
     spec:
       containers:
-      - image: eubrabigsea/citrus:latest
+      - image: 150.164.203.230:5000/eubrabigsea/citrus:latest
         imagePullPolicy: Always
         name: citrus
         volumeMounts:
