@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: seed-worker
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: seed-worker
+  template:
+    metadata:
+      labels:
+        app: seed-worker
+    spec:
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: local-registry
+      containers:
+      - image: /eubrabigsea/seed:latest
+        command: ['/usr/local/bin/rq']
+        args: ['worker', '--url', 'redis://redis', '-v', 'seed']
+        imagePullPolicy: Always
+        name: seed-worker
+        volumeMounts:
+        - name: "seed-config"
+          mountPath: "/usr/local/seed/conf/seed-config.yaml"
+          subPath: "seed-config.yaml"
+        env:
+        - name: SEED_CONF
+          value: /usr/local/seed/conf/seed-config.yaml
+      restartPolicy: Always
+      volumes:
+      - name: "seed-config"
+        configMap:
+          name: "seed-config"
