@@ -92,8 +92,9 @@ envsubst < ./k8s/juicer-worker-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f
 cecho "GREEN"  "Installing Lemonade Limonero service"
 envsubst < ./k8s/limonero-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
-cecho "GREEN"  "Installing Lemonade Seed service"
+cecho "GREEN"  "Installing Lemonade Seed service and worker"
 envsubst < ./k8s/seed-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
+envsubst < ./k8s/seed-worker-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Stand service"
 envsubst < ./k8s/stand-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
