@@ -67,9 +67,10 @@ $KUBECTL create configmap nginx-config --from-file config/nginx.conf -n ${NAMESP
 envsubst < ./config/caipirinha-config.yaml > /tmp/caipirinha-config.yaml && $KUBECTL create configmap caipirinha-config --from-file /tmp/caipirinha-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 envsubst < ./config/juicer-config.yaml > /tmp/juicer-config.yaml && $KUBECTL create configmap juicer-config --from-file /tmp/juicer-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 envsubst < ./config/limonero-config.yaml > /tmp/limonero-config.yaml &&  $KUBECTL create configmap limonero-config --from-file /tmp/limonero-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+envsubst < ./config/seed-config.yaml > /tmp/seed-config.yaml && $KUBECTL create configmap seed-config --from-file /tmp/seed-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 envsubst < ./config/stand-config.yaml > /tmp/stand-config.yaml && $KUBECTL create configmap stand-config --from-file /tmp/stand-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 envsubst < ./config/tahiti-config.yaml > /tmp/tahiti-config.yaml && $KUBECTL create configmap tahiti-config --from-file /tmp/tahiti-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
-$KUBECTL create configmap thorn-config --from-file ./config/thorn-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
+envsubst < ./config/tahiti-config.yaml > /tmp/tahiti-config.yaml && $KUBECTL create configmap thorn-config --from-file ./config/thorn-config.yaml -n ${NAMESPACE} -o yaml --dry-run=client | $KUBECTL apply -f -
 
 cecho "GREEN"  "Creating persistent volume hdfs-${NAMESPACE}-pv used by HDFS (base path ${STORAGE_PATH})"
 envsubst < ./k8s/hdfs-pv.yaml | $KUBECTL apply -n $NAMESPACE -f -
@@ -82,17 +83,17 @@ envsubst < ./k8s/citrus-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 cecho "GREEN"  "Installing Lemonade Caipirinha service"
 envsubst < ./k8s/caipirinha-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
-cecho "GREEN"  "Installing Lemonade Juicer service"
+cecho "GREEN"  "Installing Lemonade Juicer service and worker"
 envsubst < ./k8s/juicer-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
+envsubst < ./k8s/juicer-worker-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 #$KUBECTL expose deployment juicer --port=29413 --type=ClusterIP --cluster-ip=None -n $NAMESPACE
 
 cecho "GREEN"  "Installing Lemonade Limonero service"
 envsubst < ./k8s/limonero-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
-# Under development
-# cecho "GREEN"  "Installing Lemonade Seed service"
-# envsubst < ./k8s/seed-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
+cecho "GREEN"  "Installing Lemonade Seed service"
+envsubst < ./k8s/seed-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -
 
 cecho "GREEN"  "Installing Lemonade Stand service"
 envsubst < ./k8s/stand-deployment.yaml | $KUBECTL apply -n $NAMESPACE -f -

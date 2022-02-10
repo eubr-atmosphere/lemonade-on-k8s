@@ -1,0 +1,14 @@
+# Seed configuration file
+seed:
+    debug: false
+    environment: prod
+    port: 23405
+    secret: ${AUTH_TOKEN}
+    servers:
+        database_url: mysql+pymysql://root:lemon@mysql/seed?charset=utf8
+        redis_url: redis://localhost:6379
+    services:
+    config:
+        SQLALCHEMY_POOL_SIZE: 0
+        SQLALCHEMY_POOL_RECYCLE: 60
+
