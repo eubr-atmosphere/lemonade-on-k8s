@@ -8,7 +8,8 @@ spec:
     app: redis # Used to connect to the deployment
   ports: 
   - port: 6379
-    nodePort: ${REDIS_PORT}
+    # k8s will choose the port
+    # nodePort: ${REDIS_PORT}
     targetPort: 6379
 ---
 apiVersion: apps/v1 

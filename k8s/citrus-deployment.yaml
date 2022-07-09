@@ -6,7 +6,8 @@ spec:
   type: NodePort # Expose services to outside
   ports:
   - port: 8080
-    nodePort: ${CITRUS_PORT}
+    # K8s will choose the port
+    # nodePort: ${CITRUS_PORT}
   selector:
     app: citrus  # Used to connect to the deployment
   #clusterIP: None

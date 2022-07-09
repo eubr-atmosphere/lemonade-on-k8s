@@ -6,7 +6,8 @@ spec:
   type: NodePort # Expose services to outside
   ports:
   - port: 3306
-    nodePort: ${MYSQL_NODE_PORT}
+    # K8s will choose the port
+    # nodePort: ${MYSQL_NODE_PORT}
   selector:
     app: mysql  # Used to connect to the deployment
 ---

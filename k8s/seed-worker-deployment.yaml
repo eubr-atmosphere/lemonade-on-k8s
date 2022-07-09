@@ -1,31 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: thorn-worker
+  name: seed-worker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: thorn-worker
+      app: seed-worker
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: thorn-worker
+        app: seed-worker
     spec:
       containers:
-      - image: 150.164.203.230:5000/eubrabigsea/thorn:latest
+      - image: 150.164.203.230:5000/eubrabigsea/seed:latest
         imagePullPolicy: Always
-        name: thorn-worker
+        name: seed-worker
         command: ["/usr/bin/dumb-init", "--", "/usr/local/bin/entrypoint", "worker"]
         volumeMounts:
-        - name: "thorn-config"
-          mountPath: /usr/local/thorn/conf/thorn-config.yaml
-          subPath: thorn-config.yaml
+        - name: "seed-config"
+          mountPath: /usr/local/seed/conf/seed-config.yaml
+          subPath: seed-config.yaml
       restartPolicy: Always
       volumes:
-      - name: "thorn-config"
+      - name: "seed-config"
         configMap:
-          name: "thorn-config"
+          name: "seed-config"
  
